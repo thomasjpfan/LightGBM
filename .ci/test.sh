@@ -102,7 +102,7 @@ if [[ $TASK == "sdist" ]]; then
         fi
         cp $BUILD_DIRECTORY/build/lightgbmlib.jar $BUILD_ARTIFACTSTAGINGDIRECTORY/lightgbmlib_$OS_NAME.jar
     fi
-    pytest $BUILD_DIRECTORY/tests/python_package_test || exit -1
+    pytest $BUILD_DIRECTORY/tests/python_package_test --durations=0 || exit -1
     exit 0
 elif [[ $TASK == "bdist" ]]; then
     if [[ $OS_NAME == "macos" ]]; then
@@ -118,7 +118,7 @@ elif [[ $TASK == "bdist" ]]; then
         fi
     fi
     pip install --user $BUILD_DIRECTORY/python-package/dist/*.whl || exit -1
-    pytest $BUILD_DIRECTORY/tests || exit -1
+    pytest $BUILD_DIRECTORY/tests --durations=0 || exit -1
     exit 0
 fi
 

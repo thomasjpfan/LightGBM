@@ -17,7 +17,7 @@ if [[ $OS_NAME == "macos" ]]; then
     if [[ $AZURE == "true" ]] && [[ $TASK == "sdist" ]]; then
         brew install swig@3
     fi
-    wget -q -O conda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+    wget -q -O conda.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-MacOSX-x86_64.sh
 else  # Linux
     if [[ $IN_UBUNTU_LATEST_CONTAINER == "true" ]]; then
 
@@ -85,7 +85,7 @@ else  # Linux
         ./cmake.sh --prefix=/usr/local --exclude-subdir
     fi
     if [[ $SETUP_CONDA != "false" ]]; then
-        wget -q -O conda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        wget -q -O conda.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
     fi
 fi
 
@@ -94,5 +94,5 @@ if [[ "${TASK}" != "r-package" ]]; then
         sh conda.sh -b -p $CONDA
     fi
     conda config --set always_yes yes --set changeps1 no
-    conda update -q -y conda
+    mamba update -q -y conda -c anaconda
 fi

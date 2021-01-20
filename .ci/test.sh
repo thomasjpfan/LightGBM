@@ -13,21 +13,14 @@ if [[ "${TASK}" == "r-package" ]]; then
     exit 0
 fi
 
-conda create -q -y -n $CONDA_ENV python=$PYTHON_VERSION
+mamba create -q -y -n $CONDA_ENV python=$PYTHON_VERSION
 source activate $CONDA_ENV
-
-conda install -c conda-forge mamba
-alias conda=mamba
-
-conda install scikit-learn
-
-exit 1
 
 cd $BUILD_DIRECTORY
 
 if [[ $TASK == "check-docs" ]]; then
     cd $BUILD_DIRECTORY/docs
-    conda install -q -y -n $CONDA_ENV -c conda-forge doxygen
+    mamba install -q -y -n $CONDA_ENV -c conda-forge doxygen
     pip install --user -r requirements.txt rstcheck git+git://github.com/linkchecker/linkchecker.git@b9390c9ef63f7e1e210b48bc7fe97f76e8d39501
     # check reStructuredText formatting
     cd $BUILD_DIRECTORY/python-package
@@ -47,11 +40,11 @@ if [[ $TASK == "check-docs" ]]; then
 fi
 
 if [[ $TASK == "lint" ]]; then
-    conda install -q -y -n $CONDA_ENV \
+    mamba install -q -y -n $CONDA_ENV -c anaconda \
         pycodestyle \
         pydocstyle \
         r-stringi  # stringi needs to be installed separate from r-lintr to avoid issues like 'unable to load shared object stringi.so'
-    conda install -q -y -n $CONDA_ENV \
+    mamba install -q -y -n $CONDA_ENV \
         -c conda-forge \
             libxml2 \
             "r-lintr>=2.0"
@@ -67,7 +60,7 @@ if [[ $TASK == "lint" ]]; then
 fi
 
 if [[ $TASK == "if-else" ]]; then
-    conda install -q -y -n $CONDA_ENV numpy
+    mamba install -q -y -n $CONDA_ENV -c anaconda numpy
     mkdir $BUILD_DIRECTORY/build && cd $BUILD_DIRECTORY/build && cmake .. && make lightgbm -j4 || exit -1
     cd $BUILD_DIRECTORY/tests/cpp_test && ../../lightgbm config=train.conf convert_model_language=cpp convert_model=../../src/boosting/gbdt_prediction.cpp && ../../lightgbm config=predict.conf output_result=origin.pred || exit -1
     cd $BUILD_DIRECTORY/build && make lightgbm -j4 || exit -1
@@ -75,11 +68,11 @@ if [[ $TASK == "if-else" ]]; then
     exit 0
 fi
 
-conda install -q -y -n $CONDA_ENV dask dask-ml distributed joblib matplotlib numpy pandas psutil pytest scikit-learn scipy
+mamba install -q -y -n $CONDA_ENV -c anaconda dask dask-ml distributed joblib matplotlib numpy pandas psutil pytest scikit-learn scipy
 
 # graphviz must come from conda-forge to avoid this on some linux distros:
 # https://github.com/conda-forge/graphviz-feedstock/issues/18
-conda install -q -y \
+mamba install -q -y \
     -n $CONDA_ENV \
     -c conda-forge \
         python-graphviz \
@@ -206,6 +199,6 @@ matplotlib.use\(\"Agg\"\)\
     sed -i'.bak' 's/graph.render(view=True)/graph.render(view=False)/' plot_example.py
     for f in *.py; do python $f || exit -1; done  # run all examples
     cd $BUILD_DIRECTORY/examples/python-guide/notebooks
-    conda install -q -y -n $CONDA_ENV ipywidgets notebook
+    mamba install -q -y -n $CONDA_ENV -c anaconda ipywidgets notebook
     jupyter nbconvert --ExecutePreprocessor.timeout=180 --to notebook --execute --inplace *.ipynb || exit -1  # run all notebooks
 fi

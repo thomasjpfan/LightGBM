@@ -16,6 +16,13 @@ fi
 conda create -q -y -n $CONDA_ENV python=$PYTHON_VERSION
 source activate $CONDA_ENV
 
+conda install -c conda-forge mamba
+alias conda=mamba
+
+conda install scikit-learn
+
+exit 1
+
 cd $BUILD_DIRECTORY
 
 if [[ $TASK == "check-docs" ]]; then

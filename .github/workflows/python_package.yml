@@ -1,12 +1,6 @@
 name: Python-package
 
-on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+on: [push, pull_request]
 
 env:
   CONDA_ENV: test-env
